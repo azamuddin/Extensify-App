@@ -51,6 +51,7 @@ const defaultProps = {
         email: null,
     },
     parentReport: {},
+    policy: undefined,
 };
 
 function MoneyRequestHeader(props) {
