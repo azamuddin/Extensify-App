@@ -41,7 +41,7 @@ class WorkspaceRateAndUnitPage extends React.Component {
 
     getUnitItems() {
         return [
-            {label: this.props.translate('workspace.reimburse.kilometers'), value: CONST.CUSTOM_UNITS.DISTANCE_UNIT_KILOMETERS},
+            {label: this.props.translate('common.kilometers'), value: CONST.CUSTOM_UNITS.DISTANCE_UNIT_KILOMETERS},
             {label: this.props.translate('common.miles'), value: CONST.CUSTOM_UNITS.DISTANCE_UNIT_MILES},
         ];
     }
@@ -87,15 +87,17 @@ class WorkspaceRateAndUnitPage extends React.Component {
     submit(values) {
         this.saveUnitAndRate(values.unit, values.rate);
         Keyboard.dismiss();
-        Navigation.goBack(ROUTES.getWorkspaceReimburseRoute(this.props.policy.id));
+        Navigation.goBack(ROUTES.WORKSPACE_REIMBURSE.getRoute(this.props.policy.id));
     }
 
     validate(values) {
         const errors = {};
         const decimalSeparator = this.props.toLocaleDigit('.');
-        const rateValueRegex = RegExp(String.raw`^\d{0,8}([${getPermittedDecimalSeparator(decimalSeparator)}]\d{1,3})?$`, 'i');
+        const rateValueRegex = RegExp(String.raw`^-?\d{0,8}([${getPermittedDecimalSeparator(decimalSeparator)}]\d{1,3})?$`, 'i');
         if (!rateValueRegex.test(values.rate) || values.rate === '') {
             errors.rate = 'workspace.reimburse.invalidRateError';
+        } else if (parseFloat(values.rate) <= 0) {
+            errors.rate = 'workspace.reimburse.lowRateError';
         }
         return errors;
     }
@@ -109,7 +111,7 @@ class WorkspaceRateAndUnitPage extends React.Component {
                 route={this.props.route}
                 guidesCallTaskID={CONST.GUIDES_CALL_TASK_IDS.WORKSPACE_REIMBURSE}
                 shouldSkipVBBACall
-                backButtonRoute={ROUTES.getWorkspaceReimburseRoute(this.props.policy.id)}
+                backButtonRoute={ROUTES.WORKSPACE_REIMBURSE.getRoute(this.props.policy.id)}
             >
                 {() => (
                     <Form
